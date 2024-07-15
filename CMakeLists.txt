@@ -28,7 +28,7 @@ file(GLOB_RECURSE HEADER_FILES ${CMAKE_SOURCE_DIR}/src/*.h ${CMAKE_SOURCE_DIR}/s
 file(GLOB_RECURSE RESOURCE_FILES ${CMAKE_SOURCE_DIR}/res/*.rc)
 
 # Dependencies
-#find_package(miniaudio CONFIG REQUIRED)
+find_package(kissfft CONFIG REQUIRED)
 
 add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES} ${RESOURCE_FILES})
 if(MSVC)
@@ -37,8 +37,8 @@ endif()
 
 #miniaudio config
 find_path(MINIAUDIO_INCLUDE_DIRS "miniaudio.h")
-#target_include_directories(main PRIVATE ${MINIAUDIO_INCLUDE_DIRS})
 include_directories("${CMAKE_SOURCE_DIR}/src" "${MINIAUDIO_INCLUDE_DIRS}")
+target_link_libraries(${PROJECT_NAME} PRIVATE kissfft::kissfft-float)
 
 message($CMAKE_BUILD_TYPE)
 

@@ -9,6 +9,7 @@ namespace Phoenix {
 	{
 		ma_result result;
 
+
 		sound.clear();
 		m_LoadedSounds = 0;
 		m_inited = false;
@@ -17,7 +18,7 @@ namespace Phoenix {
 		m_resourceManagerConfig = ma_resource_manager_config_init();
 		m_resourceManagerConfig.decodedFormat = ma_format_f32;	// ma_format_f32 should almost always be used as that's what the engine (and most everything else) uses for mixing
 		m_resourceManagerConfig.decodedChannels = 0;			// Setting the channel count to 0 will cause sounds to use their native channel count
-		m_resourceManagerConfig.decodedSampleRate = 48000;		// Using a consistent sample rate is useful for avoiding expensive resampling in the audio thread. This will result in resampling being performed by the loading thread(s)
+		m_resourceManagerConfig.decodedSampleRate = 44100;		// Using a consistent sample rate is useful for avoiding expensive resampling in the audio thread. This will result in resampling being performed by the loading thread(s)
 
 		result = ma_resource_manager_init(&m_resourceManagerConfig, &m_resourceManager);
 		if (result != MA_SUCCESS) {
@@ -110,4 +111,54 @@ namespace Phoenix {
 		return ma_version;
 	}
 
+	void SoundManager::enumerateDevices()
+	{
+		ma_result result;
+		ma_context context;
+		ma_device_info* pPlaybackDeviceInfos;
+		ma_uint32 playbackDeviceCount;
+		ma_device_info* pCaptureDeviceInfos;
+		ma_uint32 captureDeviceCount;
+		ma_uint32 iDevice;
+
+		if (ma_context_init(NULL, 0, NULL, &context) != MA_SUCCESS) {
+			printf("Failed to initialize context.\n");
+			return;
+		}
+
+		result = ma_context_get_devices(&context, &pPlaybackDeviceInfos, &playbackDeviceCount, &pCaptureDeviceInfos, &captureDeviceCount);
+		if (result != MA_SUCCESS) {
+			printf("Failed to retrieve device information.\n");
+			return;
+		}
+
+		printf("Playback Devices\n");
+		for (iDevice = 0; iDevice < playbackDeviceCount; ++iDevice) {
+			printf("    %u: %s\n", iDevice, pPlaybackDeviceInfos[iDevice].name);
+		}
+
+		printf("\n");
+
+		printf("Capture Devices\n");
+		for (iDevice = 0; iDevice < captureDeviceCount; ++iDevice) {
+			printf("    %u: %s\n", iDevice, pCaptureDeviceInfos[iDevice].name);
+		}
+
+
+		ma_context_uninit(&context);
+
+	}
+
+/*	void SoundManager::dataCallback(ma_device* pDevice, void* pOutput, const void* pInput, ma_uint32 frameCount)
+	{
+		ma_decoder* pDecoder = (ma_decoder*)pDevice->pUserData;
+		if (pDecoder == NULL) {
+			return;
+		}
+
+		ma_decoder_read_pcm_frames(pDecoder, pOutput, frameCount, NULL);
+
+		(void)pInput;
+	}
+*/
 }

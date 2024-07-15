@@ -60,6 +60,9 @@ int main(int argc, char* argv[])
 
 	char charCaptured = 0;
 	printf("\nMiniaudio version: %s\n", soundManager.getVersion().c_str());
+
+	soundManager.enumerateDevices();
+
 	printf("\nPress 'z' to quit...\n");
 	printf("\n1-Load song 1");
 	printf("\n2-Load song 2");
