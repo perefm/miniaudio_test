@@ -111,7 +111,7 @@ namespace Phoenix {
 	{
 		if (m_inited) {
 			ma_result result;
-			result = ma_engine_set_volume(&m_engine, volume);
+			result = ma_device_set_master_volume(&m_device, volume);
 			if (result != MA_SUCCESS)
 				return false;
 		}
